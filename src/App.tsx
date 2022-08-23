@@ -1,11 +1,7 @@
-import React from "react";
+import SelectProject from "./SelectProject";
 
 function App() {
-    return (
-        <div>
-            <p>Zeplin Scribe</p>
-        </div>
-    );
+    return <SelectProject />;
 }
 
 export default App;
