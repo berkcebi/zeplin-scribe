@@ -1,7 +1,7 @@
 :root {
     --primary-color: rgba(0, 0, 0, 0.9);
     --secondary-color: rgba(0, 0, 0, 0.5);
-    --link-color: rgba(0, 122, 255);
+    --accent-color: rgba(0, 122, 255);
     --font-family: "Space Mono", monospace;
     --font-size: 14px;
 }
@@ -19,7 +19,7 @@ p {
 }
 
 a {
-    color: var(--link-color);
+    color: var(--accent-color);
 }
 
 button {
@@ -28,7 +28,7 @@ button {
     padding: 0;
     font-family: var(--font-family);
     font-size: var(--font-size);
-    color: var(--link-color);
+    color: var(--accent-color);
     cursor: pointer;
 }
 
@@ -41,7 +41,7 @@ input[type="text"] {
     cursor: text;
     font-family: var(--font-family);
     font-size: var(--font-size);
-    caret-color: var(--link-color);
+    caret-color: var(--accent-color);
 }
 
 input[type="text"]:focus {
