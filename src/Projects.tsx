@@ -74,13 +74,12 @@ function Projects(props: { onSelect: (project: Project) => void }) {
 
     return (
         <div>
-            <Header onBack={() => console.log("Back button clicked.")}>
-                Select project
-            </Header>
+            <Header>Select project</Header>
             <input
                 type="text"
                 id="projectName"
                 placeholder="Type project name"
+                autoComplete="off"
                 autoFocus
                 onChange={handleInputChange}
             ></input>
