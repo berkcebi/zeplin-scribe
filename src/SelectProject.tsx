@@ -5,8 +5,14 @@ import zeplin from "./zeplin";
 
 const REQUEST_LIMIT = 100;
 const MAX_FILTERED_PROJECTS = 20;
+const PLATFORM_DESCRIPTIONS = {
+    web: "Web",
+    ios: "iOS",
+    android: "Android",
+    macos: "macOS",
+};
 
-function SelectProject() {
+function SelectProject(props: { onSelect: (project: Project) => void }) {
     const [projects, setProjects] = useState<Project[] | undefined>(undefined);
     const [filteredProjects, setFilteredProjects] = useState<
         Project[] | undefined
@@ -45,7 +51,7 @@ function SelectProject() {
         };
     }, []);
 
-    function filterProjects(projects: Project[] | undefined) {
+    const filterProjects = (projects: Project[] | undefined) => {
         if (!projects || keyword.current.length < 3) {
             setFilteredProjects(undefined);
             return;
@@ -59,7 +65,7 @@ function SelectProject() {
             )
             .slice(0, MAX_FILTERED_PROJECTS);
         setFilteredProjects(filteredProjects);
-    }
+    };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         keyword.current = event.target.value.trim();
@@ -84,15 +90,20 @@ function SelectProject() {
                     <ul>
                         {filteredProjects.map((project) => (
                             <li key={project.id}>
-                                {project.name}, {project.platform}
+                                <button onClick={() => props.onSelect(project)}>
+                                    {project.name}
+                                </button>
+                                <span className="secondary">
+                                    , {PLATFORM_DESCRIPTIONS[project.platform]}
+                                </span>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <p>No such project</p>
+                    <p className="secondary">No such project</p>
                 ))
             ) : (
-                <p>Fetching projects…</p>
+                <p className="secondary">Fetching projects…</p>
             )}
         </div>
     );

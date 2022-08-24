@@ -11,7 +11,7 @@ body {
     font-family: var(--font-family);
     font-size: var(--font-size);
     text-underline-offset: 2px;
-    color: var(--secondary-color);
+    color: var(--primary-color);
 }
 
 p {

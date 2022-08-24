@@ -6,7 +6,7 @@ function Header(props: { onBack?: () => void; children: React.ReactNode }) {
                     <span className="secondary">&lt;- Back</span>
                 </button>
             )}
-            <p className="primary">{props.children}</p>
+            <p>{props.children}</p>
         </header>
     );
 }
