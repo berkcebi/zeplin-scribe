@@ -12,7 +12,7 @@ const PLATFORM_DESCRIPTIONS = {
     macos: "macOS",
 };
 
-function SelectProject(props: { onSelect: (project: Project) => void }) {
+function Projects(props: { onSelect: (project: Project) => void }) {
     const [projects, setProjects] = useState<Project[] | undefined>(undefined);
     const [filteredProjects, setFilteredProjects] = useState<
         Project[] | undefined
@@ -109,4 +109,4 @@ function SelectProject(props: { onSelect: (project: Project) => void }) {
     );
 }
 
-export default SelectProject;
+export default Projects;
