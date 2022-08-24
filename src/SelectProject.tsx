@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Project, ProjectStatusEnum } from "@zeplin/sdk";
 import Header from "./Header";
 import zeplin from "./zeplin";
 
-const LIMIT = 100;
+const REQUEST_LIMIT = 100;
+const MAX_FILTERED_PROJECTS = 20;
 
 function SelectProject() {
     const [projects, setProjects] = useState<Project[] | undefined>(undefined);
+    const [filteredProjects, setFilteredProjects] = useState<
+        Project[] | undefined
+    >(undefined);
+    const keyword = useRef("");
 
     useEffect(() => {
         let didCancel = false;
@@ -17,20 +22,21 @@ function SelectProject() {
             while (!didCancel && fetchNextPage) {
                 const response = await zeplin.projects.getProjects({
                     status: ProjectStatusEnum.ACTIVE,
-                    limit: LIMIT,
+                    limit: REQUEST_LIMIT,
                     offset: projects.length,
                 });
 
                 const responseProjects = response.data;
                 projects.push(...responseProjects);
 
-                if (responseProjects.length < LIMIT) {
+                if (responseProjects.length < REQUEST_LIMIT) {
                     fetchNextPage = false;
                 }
             }
 
             if (!didCancel) {
                 setProjects(projects);
+                filterProjects(projects);
             }
         })();
 
@@ -39,10 +45,25 @@ function SelectProject() {
         };
     }, []);
 
+    function filterProjects(projects: Project[] | undefined) {
+        if (!projects || keyword.current.length < 3) {
+            setFilteredProjects(undefined);
+            return;
+        }
+
+        const filteredProjects = projects
+            .filter((project) =>
+                project.name
+                    .toLowerCase()
+                    .includes(keyword.current.toLowerCase())
+            )
+            .slice(0, MAX_FILTERED_PROJECTS);
+        setFilteredProjects(filteredProjects);
+    }
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(
-            `Changed text input to ${JSON.stringify(event.target.value)}.`
-        );
+        keyword.current = event.target.value.trim();
+        filterProjects(projects);
     };
 
     return (
@@ -58,7 +79,18 @@ function SelectProject() {
                 onChange={handleInputChange}
             ></input>
             {projects ? (
-                <p>{projects.length} projects</p>
+                filteredProjects &&
+                (filteredProjects.length ? (
+                    <ul>
+                        {filteredProjects.map((project) => (
+                            <li key={project.id}>
+                                {project.name}, {project.platform}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No such project</p>
+                ))
             ) : (
                 <p>Fetching projects…</p>
             )}
