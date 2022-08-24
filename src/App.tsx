@@ -8,6 +8,7 @@ const REQUEST_LIMIT = 100;
 
 function App() {
     const [projects, setProjects] = useState<Project[] | undefined>(undefined);
+    const [projectQuery, setProjectQuery] = useState("");
     const [selectedProject, setSelectedProject] = useState<Project | undefined>(
         undefined
     );
@@ -51,10 +52,19 @@ function App() {
         setSelectedProject(project);
     };
 
+    const handleProjectQueryChange = (projectQuery: string) => {
+        setProjectQuery(projectQuery);
+    };
+
     return selectedProject ? (
         <Comments project={selectedProject} onBack={handleBack} />
     ) : (
-        <Projects projects={projects} onSelect={handleSelectProject} />
+        <Projects
+            projects={projects}
+            query={projectQuery}
+            onSelect={handleSelectProject}
+            onQueryChange={handleProjectQueryChange}
+        />
     );
 }
 

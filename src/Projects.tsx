@@ -12,12 +12,17 @@ const PLATFORM_DESCRIPTIONS = {
 
 function Projects(props: {
     projects: Project[] | undefined;
+    query: string;
     onSelect: (project: Project) => void;
+    onQueryChange: (query: string) => void;
 }) {
-    const [query, setQuery] = useState("");
+    const [query, setQuery] = useState(props.query);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const query = event.target.value.trim();
+
         setQuery(event.target.value.trim());
+        props.onQueryChange(query);
     };
 
     let element = () => {
@@ -61,6 +66,7 @@ function Projects(props: {
             <input
                 type="text"
                 id="projectName"
+                value={query}
                 placeholder="Type project name"
                 autoComplete="off"
                 autoFocus
