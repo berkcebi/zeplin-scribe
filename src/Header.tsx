@@ -1,10 +1,12 @@
-function Header(props: { onBack?: () => void; children: React.ReactNode }) {
+import { Link } from "react-router-dom";
+
+function Header(props: { backTo?: string; children: React.ReactNode }) {
     return (
         <header>
-            {props.onBack && (
-                <button onClick={props.onBack}>
+            {props.backTo && (
+                <Link to={props.backTo}>
                     <span className="secondary">&lt;- Back</span>
-                </button>
+                </Link>
             )}
             <p>{props.children}</p>
         </header>

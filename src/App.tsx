@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import { Project, ProjectStatusEnum } from "@zeplin/sdk";
 import Comments from "./Comments";
 import Projects from "./Projects";
@@ -9,9 +10,6 @@ const REQUEST_LIMIT = 100;
 function App() {
     const [projects, setProjects] = useState<Project[] | undefined>(undefined);
     const [projectQuery, setProjectQuery] = useState("");
-    const [selectedProject, setSelectedProject] = useState<Project | undefined>(
-        undefined
-    );
 
     useEffect(() => {
         let didCancel = false;
@@ -44,28 +42,27 @@ function App() {
         };
     }, []);
 
-    const handleBack = () => {
-        setSelectedProject(undefined);
-    };
-
-    const handleSelectProject = (project: Project) => {
-        setSelectedProject(project);
-    };
-
     const handleProjectQueryChange = (projectQuery: string) => {
         setProjectQuery(projectQuery);
     };
 
-    // TODO: Support browser back/forward buttons.
-    return selectedProject ? (
-        <Comments project={selectedProject} onBack={handleBack} />
-    ) : (
-        <Projects
-            projects={projects}
-            query={projectQuery}
-            onSelect={handleSelectProject}
-            onQueryChange={handleProjectQueryChange}
-        />
+    return (
+        <Routes>
+            <Route
+                path="/"
+                element={
+                    <Projects
+                        projects={projects}
+                        query={projectQuery}
+                        onQueryChange={handleProjectQueryChange}
+                    />
+                }
+            />
+            <Route
+                path="/:projectId"
+                element={<Comments projects={projects} />}
+            />
+        </Routes>
     );
 }
 

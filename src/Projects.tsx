@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Project } from "@zeplin/sdk";
 import Header from "./Header";
 
+const MIN_QUERY_LENGTH = 3;
 const MAX_FILTERED_PROJECTS = 20;
 const PLATFORM_DESCRIPTIONS = {
     web: "Web",
@@ -13,7 +15,6 @@ const PLATFORM_DESCRIPTIONS = {
 function Projects(props: {
     projects: Project[] | undefined;
     query: string;
-    onSelect: (project: Project) => void;
     onQueryChange: (query: string) => void;
 }) {
     const [query, setQuery] = useState(props.query);
@@ -30,7 +31,7 @@ function Projects(props: {
             return <p className="secondary">Fetching projects…</p>;
         }
 
-        if (query.length < 3) {
+        if (query.length < MIN_QUERY_LENGTH) {
             return;
         }
 
@@ -48,9 +49,7 @@ function Projects(props: {
             <ul>
                 {filteredProjects.map((project) => (
                     <li key={project.id}>
-                        <button onClick={() => props.onSelect(project)}>
-                            {project.name}
-                        </button>
+                        <Link to={"/" + project.id}>{project.name}</Link>
                         <span className="secondary">
                             , {PLATFORM_DESCRIPTIONS[project.platform]}
                         </span>

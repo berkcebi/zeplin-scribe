@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Project, Screen, ScreenNote, ScreenNoteStatusEnum } from "@zeplin/sdk";
 import Header from "./Header";
 import zeplin from "./zeplin";
@@ -11,7 +12,8 @@ type CommentCollection = {
     comments: ScreenNote[];
 };
 
-function Comments(props: { project: Project; onBack: () => void }) {
+function Comments(props: { projects: Project[] | undefined }) {
+    let { projectId = "" } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [loadingDescription, setLoadingDescription] = useState("");
     const [commentCollections, setCommentCollections] = useState<
@@ -26,7 +28,7 @@ function Comments(props: { project: Project; onBack: () => void }) {
             let fetchNextPage = true;
             while (!didCancel && fetchNextPage) {
                 const response = await zeplin.screens.getProjectScreens(
-                    props.project.id,
+                    projectId,
                     {
                         limit: REQUEST_LIMIT,
                         offset: screens.length,
@@ -50,7 +52,7 @@ function Comments(props: { project: Project; onBack: () => void }) {
                     `${index + 1} of ${screens.length} screens`
                 );
                 const response = await zeplin.screens.getScreenNotes(
-                    props.project.id,
+                    projectId,
                     screen.id,
                     {
                         // Assume no screen has more than 100 comments.
@@ -85,10 +87,25 @@ function Comments(props: { project: Project; onBack: () => void }) {
         return () => {
             didCancel = true;
         };
-    }, [props.project]);
+    }, [projectId]);
+
+    const getProjectName = (): string | undefined => {
+        if (!props.projects) {
+            return;
+        }
+
+        const project = props.projects.find(
+            (project) => project.id === projectId
+        );
+        if (!project) {
+            return;
+        }
+
+        return project.name;
+    };
 
     const getScreenUrl = (screen: Screen): string => {
-        return `${ZEPLIN_BASE_URL}/project/${props.project.id}/screen/${screen.id}`;
+        return `${ZEPLIN_BASE_URL}/project/${projectId}/screen/${screen.id}`;
     };
 
     const getCommentUrl = (screen: Screen, comment: ScreenNote): string => {
@@ -97,9 +114,9 @@ function Comments(props: { project: Project; onBack: () => void }) {
 
     return (
         <>
-            <Header onBack={props.onBack}>
+            <Header backTo="/">
                 <span className="secondary">Comments in</span>{" "}
-                {props.project.name}
+                {getProjectName() || "…"}
             </Header>
             <ul>
                 {commentCollections.map((commentCollection) => (
