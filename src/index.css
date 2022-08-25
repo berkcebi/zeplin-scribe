@@ -4,14 +4,17 @@
     --accent-color: rgba(0, 122, 255);
     --font-family: "Space Mono", monospace;
     --font-size: 14px;
+    --line-height: 24px;
 }
 
 body {
     margin: 16px;
     font-family: var(--font-family);
     font-size: var(--font-size);
+    line-height: var(--line-height);
     text-underline-offset: 2px;
     color: var(--primary-color);
+    line-height: 25px;
 }
 
 p {
@@ -20,27 +23,34 @@ p {
 
 a {
     color: var(--accent-color);
+    text-decoration: none;
 }
 
-ul,
-ol {
+ul {
     margin-top: 24px;
     margin-bottom: 24px;
     padding-left: 24px;
+}
+
+ul ul {
+    margin-top: 0px;
 }
 
 button {
     background: none;
     border: none;
     padding: 0;
+    margin: 0;
     font-family: var(--font-family);
     font-size: var(--font-size);
+    line-height: var(--line-height);
     color: var(--accent-color);
     cursor: pointer;
 }
 
 input[type="text"] {
     background: none;
+    margin: 0;
     border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     padding: 4px 8px;

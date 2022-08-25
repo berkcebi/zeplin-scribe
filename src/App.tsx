@@ -56,6 +56,7 @@ function App() {
         setProjectQuery(projectQuery);
     };
 
+    // TODO: Support browser back/forward buttons.
     return selectedProject ? (
         <Comments project={selectedProject} onBack={handleBack} />
     ) : (
