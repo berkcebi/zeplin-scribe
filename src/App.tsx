@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Project, ProjectStatusEnum } from "@zeplin/sdk";
 import Comments from "./Comments";
@@ -9,7 +9,7 @@ const REQUEST_LIMIT = 100;
 
 function App() {
     const [projects, setProjects] = useState<Project[] | undefined>(undefined);
-    const [projectQuery, setProjectQuery] = useState("");
+    const projectQuery = useRef("");
 
     useEffect(() => {
         let didCancel = false;
@@ -42,8 +42,8 @@ function App() {
         };
     }, []);
 
-    const handleProjectQueryChange = (projectQuery: string) => {
-        setProjectQuery(projectQuery);
+    const handleProjectQueryChange = (query: string) => {
+        projectQuery.current = query;
     };
 
     return (
@@ -53,7 +53,7 @@ function App() {
                 element={
                     <Projects
                         projects={projects}
-                        query={projectQuery}
+                        query={projectQuery.current}
                         onQueryChange={handleProjectQueryChange}
                     />
                 }
