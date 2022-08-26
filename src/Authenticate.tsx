@@ -6,6 +6,7 @@ import zeplin from "./zeplin";
 const CLIENT_ID = process.env.REACT_APP_ZEPLIN_CLIENT_ID || "";
 const REDIRECT_URI = process.env.REACT_APP_ZEPLIN_REDIRECT_URI || "";
 
+console.log(CLIENT_ID,REDIRECT_URI,'MERT');
 function Authenticate() {
     const [isLoading, setIsLoading] = useState(false);
 

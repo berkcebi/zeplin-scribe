@@ -23,17 +23,25 @@ function Authorize() {
 
         (async () => {
             // TODO: Handle error.
-            const response = await zeplin.api().authorization.createToken({
-                code: authorizationCode,
-                clientId: CLIENT_ID,
-                redirectUri: REDIRECT_URI,
-                clientSecret: CLIENT_SECRET,
-            });
-
-            const accessToken = response.data.accessToken;
-            zeplin.authenticate(accessToken);
-
-            navigate("/");
+            try {
+                const response = await zeplin.api().authorization.createToken({
+                    code: authorizationCode,
+                    clientId: CLIENT_ID,
+                    redirectUri: REDIRECT_URI,
+                    clientSecret: CLIENT_SECRET,
+                });
+    
+                const accessToken = response.data.accessToken;
+                zeplin.authenticate(accessToken);
+    
+                navigate("/");
+            } catch (err: unknown) {
+                if (err instanceof Error) {
+                    return {
+                        message: `Things exploded 'authorization:' (${err.message})`,
+                    };
+                }
+            }
         })();
     }, [searchParams, navigate]);
 
