@@ -6,7 +6,6 @@ import zeplin from "./zeplin";
 const CLIENT_ID = process.env.REACT_APP_ZEPLIN_CLIENT_ID || "";
 const REDIRECT_URI = process.env.REACT_APP_ZEPLIN_REDIRECT_URI || "";
 
-console.log(CLIENT_ID,REDIRECT_URI,'MERT');
 function Authenticate() {
     const [isLoading, setIsLoading] = useState(false);
 
@@ -14,12 +13,22 @@ function Authenticate() {
         setIsLoading(true);
 
         // TODO: Handle error.
-        const url = await zeplin.api().authorization.getAuthorizationUrl({
-            clientId: CLIENT_ID,
-            redirectUri: REDIRECT_URI,
-        });
-
-        window.location.replace(url);
+        try {
+            const url = await zeplin.api().authorization.getAuthorizationUrl({
+                clientId: CLIENT_ID,
+                redirectUri: REDIRECT_URI,
+            });
+    
+            window.location.replace(url);
+            console.log('asdasd');
+    
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                return {
+                    message: `Things exploded 'authorization:' (${err.message})`,
+                };
+            }
+        }
     };
 
     return (

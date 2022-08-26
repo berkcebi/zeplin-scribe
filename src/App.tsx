@@ -23,17 +23,25 @@ function App() {
             let fetchNextPage = true;
             while (!didCancel && fetchNextPage) {
                 // TODO: Handle error.
-                const response = await zeplin.api().projects.getProjects({
-                    status: ProjectStatusEnum.ACTIVE,
-                    limit: REQUEST_LIMIT,
-                    offset: projects.length,
-                });
-
-                const responseProjects = response.data;
-                projects.push(...responseProjects);
-
-                if (responseProjects.length < REQUEST_LIMIT) {
-                    fetchNextPage = false;
+                try {
+                    const response = await zeplin.api().projects.getProjects({
+                        status: ProjectStatusEnum.ACTIVE,
+                        limit: REQUEST_LIMIT,
+                        offset: projects.length,
+                    });
+    
+                    const responseProjects = response.data;
+                    projects.push(...responseProjects);
+    
+                    if (responseProjects.length < REQUEST_LIMIT) {
+                        fetchNextPage = false;
+                    }
+                } catch (err: unknown) {
+                    if (err instanceof Error) {
+                        return {
+                            message: `Things exploded 'getProjects:' (${err.message})`,
+                        };
+                    }
                 }
             }
 
