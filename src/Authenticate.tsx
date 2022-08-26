@@ -20,7 +20,6 @@ function Authenticate() {
             });
     
             window.location.replace(url);
-            console.log('asdasd');
     
         } catch (err: unknown) {
             if (err instanceof Error) {
