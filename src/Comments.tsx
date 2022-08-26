@@ -28,7 +28,8 @@ function Comments(props: { projects: Project[] | undefined }) {
             let fetchNextPage = true;
             while (!didCancel && fetchNextPage) {
                 // TODO: Handle error.
-                const response = await zeplin
+                try {
+                    const response = await zeplin
                     .api()
                     .screens.getProjectScreens(projectId, {
                         limit: REQUEST_LIMIT,
@@ -41,6 +42,14 @@ function Comments(props: { projects: Project[] | undefined }) {
                 if (responseScreens.length < REQUEST_LIMIT) {
                     fetchNextPage = false;
                 }
+                } catch (err: unknown) {
+                    if (err instanceof Error) {
+                        return {
+                          message: `Things exploded (${err.message})`,
+                        };
+                    }
+                }
+               
             }
 
             const commentCollections: CommentCollection[] = [];
@@ -55,30 +64,40 @@ function Comments(props: { projects: Project[] | undefined }) {
                 }
 
                 // TODO: Handle error.
-                const response = await zeplin
+
+                try {
+                    const response = await zeplin
                     .api()
                     .screens.getScreenNotes(projectId, screen.id, {
                         // Assume no screen has more than 100 comments.
                         limit: REQUEST_LIMIT,
                     });
 
-                if (didCancel) {
-                    break;
+                    if (didCancel) {
+                        break;
+                    }
+
+                    const comments = response.data;
+                    const openComments = comments.filter(
+                        (comment) => comment.status === ScreenNoteStatusEnum.OPEN
+                    );
+
+                    if (openComments.length) {
+                        commentCollections.push({
+                            screen,
+                            comments: openComments,
+                        });
+
+                        setCommentCollections(commentCollections);
+                    }
+                } catch (err: unknown) {
+                    if (err instanceof Error) {
+                        return {
+                            message: `Things exploded 'getScreenNotes:' (${err.message})`,
+                        };
+                    }
                 }
-
-                const comments = response.data;
-                const openComments = comments.filter(
-                    (comment) => comment.status === ScreenNoteStatusEnum.OPEN
-                );
-
-                if (openComments.length) {
-                    commentCollections.push({
-                        screen,
-                        comments: openComments,
-                    });
-
-                    setCommentCollections(commentCollections);
-                }
+                
             }
 
             if (!didCancel) {
