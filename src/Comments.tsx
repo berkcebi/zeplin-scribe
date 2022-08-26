@@ -13,7 +13,7 @@ type CommentCollection = {
 };
 
 function Comments(props: { projects: Project[] | undefined }) {
-    let { projectId = "" } = useParams();
+    const { projectId = "" } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [loadingDescription, setLoadingDescription] = useState("");
     const [commentCollections, setCommentCollections] = useState<
@@ -27,13 +27,13 @@ function Comments(props: { projects: Project[] | undefined }) {
             const screens: Screen[] = [];
             let fetchNextPage = true;
             while (!didCancel && fetchNextPage) {
-                const response = await zeplin.screens.getProjectScreens(
-                    projectId,
-                    {
+                // TODO: Handle error.
+                const response = await zeplin
+                    .api()
+                    .screens.getProjectScreens(projectId, {
                         limit: REQUEST_LIMIT,
                         offset: screens.length,
-                    }
-                );
+                    });
 
                 const responseScreens = response.data;
                 screens.push(...responseScreens);
@@ -48,17 +48,19 @@ function Comments(props: { projects: Project[] | undefined }) {
             for (let index = 0; index < screens.length; index++) {
                 const screen = screens[index];
 
-                setLoadingDescription(
-                    `${index + 1} of ${screens.length} screens`
-                );
-                const response = await zeplin.screens.getScreenNotes(
-                    projectId,
-                    screen.id,
-                    {
+                if (!didCancel) {
+                    setLoadingDescription(
+                        `${index + 1} of ${screens.length} screens`
+                    );
+                }
+
+                // TODO: Handle error.
+                const response = await zeplin
+                    .api()
+                    .screens.getScreenNotes(projectId, screen.id, {
                         // Assume no screen has more than 100 comments.
                         limit: REQUEST_LIMIT,
-                    }
-                );
+                    });
 
                 if (didCancel) {
                     break;

@@ -1,8 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+import Authenticate from "./Authenticate";
+import Authorize from "./Authorize";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
@@ -11,7 +13,11 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <BrowserRouter>
-            <App />
+            <Routes>
+                <Route path="*" element={<App />} />
+                <Route path="authenticate" element={<Authenticate />} />
+                <Route path="authorize" element={<Authorize />} />
+            </Routes>
         </BrowserRouter>
     </React.StrictMode>
 );

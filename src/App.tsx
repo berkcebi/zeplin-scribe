@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Project, ProjectStatusEnum } from "@zeplin/sdk";
 import Comments from "./Comments";
 import Projects from "./Projects";
@@ -12,13 +12,18 @@ function App() {
     const projectQuery = useRef("");
 
     useEffect(() => {
+        if (!zeplin.isAuthenticated()) {
+            return;
+        }
+
         let didCancel = false;
 
         (async () => {
             const projects: Project[] = [];
             let fetchNextPage = true;
             while (!didCancel && fetchNextPage) {
-                const response = await zeplin.projects.getProjects({
+                // TODO: Handle error.
+                const response = await zeplin.api().projects.getProjects({
                     status: ProjectStatusEnum.ACTIVE,
                     limit: REQUEST_LIMIT,
                     offset: projects.length,
@@ -45,6 +50,10 @@ function App() {
     const handleProjectQueryChange = (query: string) => {
         projectQuery.current = query;
     };
+
+    if (!zeplin.isAuthenticated()) {
+        return <Navigate replace to="/authenticate" />;
+    }
 
     return (
         <Routes>
